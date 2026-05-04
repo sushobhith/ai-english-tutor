@@ -28,6 +28,12 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Hello! Welcome to the English Coach Bot")
 
+async def version_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    version_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'VERSION')
+    with open(version_file, 'r') as f:
+        version = f.read().strip()
+    await update.message.reply_text(f"Version: {version}")
+
 
 # Responses
 def handle_response(text: str) -> str:    
@@ -182,6 +188,7 @@ def main():
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('custom', custom_command))
+    app.add_handler(CommandHandler('version', version_command))
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
