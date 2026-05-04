@@ -5,6 +5,7 @@ import os
 import speech_recognition as sr
 import analyse as an
 
+from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -16,6 +17,7 @@ load_dotenv(find_dotenv())
 
 TOKEN: Final = os.getenv('TELEGRAM_BOT_TOKEN') 
 BOT_USERNAME = '@EnghlishCoachBot'
+VERSION_FILE: Final = Path(__file__).resolve().with_name('VERSION')
 
 
 #Commands
@@ -27,6 +29,14 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Hello! Welcome to the English Coach Bot")
+
+
+def get_version(version_file: Path = VERSION_FILE) -> str:
+    return version_file.read_text(encoding='utf-8').strip()
+
+
+async def version_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(f"Version: {get_version()}")
 
 
 # Responses
@@ -182,6 +192,7 @@ def main():
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('custom', custom_command))
+    app.add_handler(CommandHandler('version', version_command))
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
