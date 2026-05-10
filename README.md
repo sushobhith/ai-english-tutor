@@ -45,6 +45,8 @@ python main.py
 
 Adjust the settings according to your preferences and enjoy practicing at your own pace.
 
+The bot also supports `/version`, which replies with the package version from the `VERSION` file.
+
 ## Features
 
 The AI English Tutor offers several unique features:
