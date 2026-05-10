@@ -45,6 +45,10 @@ python main.py
 
 Adjust the settings according to your preferences and enjoy practicing at your own pace.
 
+The Telegram bot supports `/start`, `/help`, `/custom`, and `/version`. The
+`/version` command replies with the package version from the root `VERSION`
+file.
+
 ## Features
 
 The AI English Tutor offers several unique features:

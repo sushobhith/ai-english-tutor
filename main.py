@@ -4,6 +4,7 @@ import subprocess
 import os
 import speech_recognition as sr
 import analyse as an
+from version import version_command
 
 from dotenv import find_dotenv, load_dotenv
 from reportlab.lib.pagesizes import letter
@@ -182,6 +183,7 @@ def main():
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('custom', custom_command))
+    app.add_handler(CommandHandler('version', version_command))
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
