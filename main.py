@@ -4,6 +4,7 @@ import subprocess
 import os
 import speech_recognition as sr
 import analyse as an
+from version_endpoint import start_version_endpoint
 
 from dotenv import find_dotenv, load_dotenv
 from reportlab.lib.pagesizes import letter
@@ -175,6 +176,7 @@ async def error(update: Update, context: ContextTypes):
 
 
 def main():
+    start_version_endpoint()
     print('Starting up bot...')
     app = Application.builder().token(TOKEN).build()
 
