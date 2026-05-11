@@ -45,6 +45,8 @@ python main.py
 
 Adjust the settings according to your preferences and enjoy practicing at your own pace.
 
+You can also check the running bot version with the `/version` command.
+
 ## Features
 
 The AI English Tutor offers several unique features:
