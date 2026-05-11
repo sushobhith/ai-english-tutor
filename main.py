@@ -18,12 +18,26 @@ TOKEN: Final = os.getenv('TELEGRAM_BOT_TOKEN')
 BOT_USERNAME = '@EnghlishCoachBot'
 
 
+def get_package_version() -> str:
+    """Return the project package version from the VERSION file."""
+    version_file = os.path.join(os.path.dirname(__file__), 'VERSION')
+    try:
+        with open(version_file, 'r', encoding='utf-8') as file:
+            return file.read().strip()
+    except FileNotFoundError:
+        return 'unknown'
+
+
+
 #Commands
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Hello! Welcome to the English Coach Bot")
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("I can help you improve your spoken english. Make sure you reply by recording a voice message")
+
+async def version_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(f"Version: {get_package_version()}")
 
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Hello! Welcome to the English Coach Bot")
@@ -181,6 +195,7 @@ def main():
     # Commands
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
+    app.add_handler(CommandHandler('version', version_command))
     app.add_handler(CommandHandler('custom', custom_command))
 
     # Messages
