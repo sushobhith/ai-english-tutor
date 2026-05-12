@@ -52,6 +52,7 @@ The AI English Tutor offers several unique features:
 1. **Affordability:** Significantly more cost-effective compared to other human-based solutions like Cambly.
 2. **Flexibility:** Practice English at your convenience, utilizing small pockets of free time in your schedule.
 3. **Confidence Building:** Eliminate hesitation by practicing with an AI tutor, providing a judgment-free environment.
+4. **Version Command:** Send `/version` to the Telegram bot to see the current project version.
 
 ## Contributing
 
