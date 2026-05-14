@@ -4,6 +4,8 @@ import subprocess
 import os
 import speech_recognition as sr
 import analyse as an
+from version import get_package_version
+from version_endpoint import start_version_endpoint
 
 from dotenv import find_dotenv, load_dotenv
 from reportlab.lib.pagesizes import letter
@@ -24,6 +26,9 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("I can help you improve your spoken english. Make sure you reply by recording a voice message")
+
+async def version_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(f"Version: {get_package_version()}")
 
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Hello! Welcome to the English Coach Bot")
@@ -175,12 +180,14 @@ async def error(update: Update, context: ContextTypes):
 
 
 def main():
+    start_version_endpoint()
     print('Starting up bot...')
     app = Application.builder().token(TOKEN).build()
 
     # Commands
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
+    app.add_handler(CommandHandler('version', version_command))
     app.add_handler(CommandHandler('custom', custom_command))
 
     # Messages

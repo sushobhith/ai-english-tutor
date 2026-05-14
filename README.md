@@ -45,6 +45,17 @@ python main.py
 
 Adjust the settings according to your preferences and enjoy practicing at your own pace.
 
+The bot also exposes the project version in two places:
+
+```bash
+
+curl http://localhost:8000/version
+
+```
+
+You can override the HTTP port with `VERSION_ENDPOINT_PORT`.
+Telegram users can also send `/version` to the bot.
+
 ## Features
 
 The AI English Tutor offers several unique features:
