@@ -1,31 +1,62 @@
+from __future__ import annotations
+
 import requests
 import json
 import subprocess
 import os
-import speech_recognition as sr
-import analyse as an
+import threading
 
 from dotenv import find_dotenv, load_dotenv
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Final
-from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 load_dotenv(find_dotenv())
 
 TOKEN: Final = os.getenv('TELEGRAM_BOT_TOKEN') 
 BOT_USERNAME = '@EnghlishCoachBot'
+VERSION: Final = os.getenv('AI_ENGLISH_TUTOR_VERSION', '0.1.0')
+VERSION_HOST: Final = os.getenv('VERSION_HOST', '0.0.0.0')
+VERSION_PORT: Final = int(os.getenv('VERSION_PORT', '8000'))
+
+
+def get_version_payload() -> dict[str, str]:
+    return {'version': VERSION}
+
+
+class VersionRequestHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path != '/version':
+            self.send_response(404)
+            self.end_headers()
+            return
+
+        body = json.dumps(get_version_payload()).encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, format, *args):
+        return
+
+
+def start_version_endpoint(host: str = VERSION_HOST, port: int = VERSION_PORT):
+    server = ThreadingHTTPServer((host, port), VersionRequestHandler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    print(f'Version endpoint listening on http://{host}:{port}/version')
+    return server
 
 
 #Commands
-async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def start_command(update, context):
     await update.message.reply_text("Hello! Welcome to the English Coach Bot")
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def help_command(update, context):
     await update.message.reply_text("I can help you improve your spoken english. Make sure you reply by recording a voice message")
 
-async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def custom_command(update, context):
     await update.message.reply_text("Hello! Welcome to the English Coach Bot")
 
 
@@ -43,7 +74,7 @@ def handle_response(text: str) -> str:
     return 'I didnt understamd what you are saying' 
 
 # Handle incoming messages
-async def handle_message(update: Update, context: ContextTypes):
+async def handle_message(update, context):
   message_type: str = update.message.chat.type
   text: str = update.message.text
 
@@ -65,7 +96,10 @@ async def handle_message(update: Update, context: ContextTypes):
   await update.message.reply_text(response)
 
 # Voice Note Handler    
-async def handle_audio_message(update: Update, context: ContextTypes):
+async def handle_audio_message(update, context):
+  import speech_recognition as sr
+  import analyse as an
+
   message_type: str = update.message.chat.type
   chat_id: str = update.message.chat.id
   voice_file_id: str = update.message.voice.file_id
@@ -125,6 +159,9 @@ def convert_oga_to_wav(input_oga_file, output_wav_file):
     print(f"An error occurred during conversion: {e}")
 
 async def generate_and_send_pdf(analysis_json : json,file_id,chat_id):
+  from reportlab.lib.pagesizes import letter
+  from reportlab.pdfgen import canvas
+
   # Sample JSON data
   # json_data = '{"name": "John", "age": 30, "city": "New York"}'
   data = json.loads(analysis_json)
@@ -170,12 +207,15 @@ async def delete_file(file_path):
       print(f"The file '{file_path}' does not exist.")
 
 # Error handler
-async def error(update: Update, context: ContextTypes):
+async def error(update, context):
     print(f'Update {update} caused error: {context.error}')
 
 
 def main():
+    from telegram.ext import Application, CommandHandler, MessageHandler, filters
+
     print('Starting up bot...')
+    version_server = start_version_endpoint()
     app = Application.builder().token(TOKEN).build()
 
     # Commands
@@ -192,7 +232,10 @@ def main():
 
     # Define a poll interval
     print('Polling...')
-    app.run_polling(poll_interval=5)
+    try:
+        app.run_polling(poll_interval=5)
+    finally:
+        version_server.shutdown()
 
 
 if __name__ == '__main__':
