@@ -43,6 +43,20 @@ python main.py
 
 ```
 
+The bot also starts a lightweight version endpoint on port `8000` by default:
+
+```bash
+curl http://localhost:8000/version
+```
+
+Response:
+
+```json
+{"version": "0.1.0"}
+```
+
+Use `VERSION_HOST`, `VERSION_PORT`, or `AI_ENGLISH_TUTOR_VERSION` to override the host, port, or reported version.
+
 Adjust the settings according to your preferences and enjoy practicing at your own pace.
 
 ## Features
