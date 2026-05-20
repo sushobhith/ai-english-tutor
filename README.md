@@ -37,6 +37,16 @@ pip install -r requirements.txt
 ```
 Copy the `.env.example` file and rename it to `.env`. Fill in the necessary environment variables.
 
+The analysis layer uses LangChain by default. Configure the model provider in `.env`:
+
+```bash
+OPENAI_API_KEY=your_open_ai_secret_key_here
+OPENAI_MODEL=gpt-3.5-turbo
+LLM_PROVIDER=langchain
+```
+
+Set `LLM_PROVIDER=openai` if you need the previous direct OpenAI client path.
+
 ```python
 
 python main.py
@@ -44,6 +54,12 @@ python main.py
 ```
 
 Adjust the settings according to your preferences and enjoy practicing at your own pace.
+
+Run the unit tests with:
+
+```bash
+python -m unittest discover -s tests
+```
 
 ## Features
 

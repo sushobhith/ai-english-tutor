@@ -1,21 +1,25 @@
-from dotenv import find_dotenv, load_dotenv
 import os
-from openai import OpenAI
+from llm import create_llm_provider
+
+try:
+    from dotenv import find_dotenv, load_dotenv
+except ModuleNotFoundError:
+    def find_dotenv():
+        return ""
+
+    def load_dotenv(*_args, **_kwargs):
+        return False
 
 load_dotenv(find_dotenv())
 
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = os.getenv('HUGGINGFACE_API_KEY')
-os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
+if os.getenv("OPENAI_API_KEY"):
+    os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
-client = OpenAI()
+DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 
-repo_id = 'gpt-3.5-turbo'
-def get_completion(input_text, model=repo_id):
-    messages = [{"role": "user", "content": get_prompt(input_text)}]
-    response = client.chat.completions.create(model=model,
-    messages=messages,
-    temperature=0)
-    return response.choices[0].message.content
+def get_completion(input_text, model=DEFAULT_MODEL, provider=None):
+    llm_provider = create_llm_provider(model=model, provider=provider)
+    return llm_provider.complete(get_prompt(input_text))
 
 def get_prompt(input_text):
   prompt = f"""proof read this text: ```{input_text}``` 
