@@ -37,6 +37,9 @@ pip install -r requirements.txt
 ```
 Copy the `.env.example` file and rename it to `.env`. Fill in the necessary environment variables.
 
+Use `LLM_PROVIDER=langchain` with `OPENAI_API_KEY` for the default LangChain path, or set
+`LLM_PROVIDER=huggingface` with `HUGGINGFACEHUB_API_TOKEN` for the Hugging Face fallback.
+
 ```python
 
 python main.py
