@@ -36,6 +36,9 @@ pip install -r requirements.txt
 
 ```
 Copy the `.env.example` file and rename it to `.env`. Fill in the necessary environment variables.
+Set `LLM_PROVIDER=langchain` to use the LangChain/OpenAI integration, or set
+`LLM_PROVIDER=huggingface` to use the Hugging Face fallback. Unknown or missing
+provider values default to `langchain`.
 
 ```python
 
