@@ -1,28 +1,22 @@
+"""Thin orchestration layer that delegates LLM calls to llm.py.
+
+The public interface (get_completion) is unchanged so main.py requires no
+modification.
+"""
+
 from dotenv import find_dotenv, load_dotenv
 import os
-from openai import OpenAI
+
+import llm as _llm
 
 load_dotenv(find_dotenv())
 
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = os.getenv('HUGGINGFACE_API_KEY')
-os.environ["OPENAI_API_KEY"] = os.getenv('OPENAI_API_KEY')
 
-client = OpenAI()
+def get_completion(input_text: str, **_kwargs) -> str:  # noqa: ANN001
+    """Analyse *input_text* and return a JSON-parseable analysis string.
 
-repo_id = 'gpt-3.5-turbo'
-def get_completion(input_text, model=repo_id):
-    messages = [{"role": "user", "content": get_prompt(input_text)}]
-    response = client.chat.completions.create(model=model,
-    messages=messages,
-    temperature=0)
-    return response.choices[0].message.content
-
-def get_prompt(input_text):
-  prompt = f"""proof read this text: ```{input_text}``` 
-
-  Summarize the analysis on the basis of Grammar and Syntax, Vocabulary and Language Use, \
-  Comprehension and Responsiveness, Content and Structure and Creativity and Originality. \
-
-  For each parameter respond in a JSON structure, give marks out of 10 and suggestion on how to improve it.
-  """
-  return prompt
+    Delegates entirely to :func:`llm.get_completion` so that the backend
+    (LangChain / HuggingFace) can be switched via the ``LLM_PROVIDER`` env
+    var without touching this file.
+    """
+    return _llm.get_completion(input_text)
