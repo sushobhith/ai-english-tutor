@@ -36,6 +36,7 @@ pip install -r requirements.txt
 
 ```
 Copy the `.env.example` file and rename it to `.env`. Fill in the necessary environment variables.
+Set `LLM_PROVIDER=langchain` to use the default LangChain `ChatOpenAI` path, or `LLM_PROVIDER=huggingface` to route through the Hugging Face fallback.
 
 ```python
 
