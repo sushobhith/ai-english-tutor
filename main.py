@@ -4,6 +4,7 @@ import subprocess
 import os
 import speech_recognition as sr
 import analyse as an
+from version_endpoint import start_version_endpoint
 
 from dotenv import find_dotenv, load_dotenv
 from reportlab.lib.pagesizes import letter
@@ -189,6 +190,9 @@ def main():
 
     # Errors
     app.add_error_handler(error)
+
+    # Start the lightweight HTTP version endpoint alongside Telegram polling.
+    start_version_endpoint()
 
     # Define a poll interval
     print('Polling...')
