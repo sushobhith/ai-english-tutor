@@ -4,6 +4,7 @@ import subprocess
 import os
 import speech_recognition as sr
 import analyse as an
+from version_server import start_version_server
 
 from dotenv import find_dotenv, load_dotenv
 from reportlab.lib.pagesizes import letter
@@ -16,6 +17,8 @@ load_dotenv(find_dotenv())
 
 TOKEN: Final = os.getenv('TELEGRAM_BOT_TOKEN') 
 BOT_USERNAME = '@EnghlishCoachBot'
+VERSION_SERVER_HOST = os.getenv('VERSION_SERVER_HOST', '0.0.0.0')
+VERSION_SERVER_PORT = int(os.getenv('VERSION_SERVER_PORT', '8080'))
 
 
 #Commands
@@ -176,6 +179,8 @@ async def error(update: Update, context: ContextTypes):
 
 def main():
     print('Starting up bot...')
+    start_version_server(VERSION_SERVER_HOST, VERSION_SERVER_PORT)
+    print(f'Version endpoint running at http://{VERSION_SERVER_HOST}:{VERSION_SERVER_PORT}/version/v2')
     app = Application.builder().token(TOKEN).build()
 
     # Commands

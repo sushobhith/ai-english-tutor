@@ -43,6 +43,25 @@ python main.py
 
 ```
 
+The bot also starts a lightweight version endpoint:
+
+```bash
+curl http://localhost:8080/version/v2
+```
+
+The endpoint returns:
+
+```json
+{
+  "name": "ai-english-tutor",
+  "version": "v2",
+  "status": "ok",
+  "environment": "development"
+}
+```
+
+Set `VERSION_SERVER_HOST` or `VERSION_SERVER_PORT` to change the bind address or port.
+
 Adjust the settings according to your preferences and enjoy practicing at your own pace.
 
 ## Features
