@@ -16,6 +16,7 @@ load_dotenv(find_dotenv())
 
 TOKEN: Final = os.getenv('TELEGRAM_BOT_TOKEN') 
 BOT_USERNAME = '@EnghlishCoachBot'
+VERSION: Final = '1.0.0'
 
 
 #Commands
@@ -27,6 +28,21 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Hello! Welcome to the English Coach Bot")
+
+async def version_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Return the bot version."""
+    await update.message.reply_text(f"AI English Tutor v{VERSION}")
+
+async def version_v2_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Return detailed version info (v2 endpoint)."""
+    import sys
+    info = (
+        f"🤖 *AI English Tutor* v{VERSION}\n"
+        f"📦 Python {sys.version.split()[0]}\n"
+        f"🆔 Bot: {BOT_USERNAME}\n"
+        f"🔗 [GitHub](https://github.com/sushobhith/ai-english-tutor)"
+    )
+    await update.message.reply_text(info, parse_mode='Markdown')
 
 
 # Responses
@@ -182,6 +198,8 @@ def main():
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('custom', custom_command))
+    app.add_handler(CommandHandler('version', version_command))
+    app.add_handler(CommandHandler('version_v2', version_v2_command))
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
