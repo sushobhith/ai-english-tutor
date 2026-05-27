@@ -43,6 +43,20 @@ python main.py
 
 ```
 
+The bot also exposes a version endpoint while it runs:
+
+```bash
+
+GET http://localhost:8000/version/v2
+
+```
+
+Optional environment variables:
+
+- `APP_VERSION`: version returned by the endpoint. Defaults to `1.0.0`.
+- `VERSION_SERVER_HOST`: host for the version endpoint. Defaults to `0.0.0.0`.
+- `VERSION_SERVER_PORT`: port for the version endpoint. Defaults to `8000`.
+
 Adjust the settings according to your preferences and enjoy practicing at your own pace.
 
 ## Features

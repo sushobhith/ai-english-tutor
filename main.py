@@ -4,6 +4,8 @@ import subprocess
 import os
 import speech_recognition as sr
 import analyse as an
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from threading import Thread
 
 from dotenv import find_dotenv, load_dotenv
 from reportlab.lib.pagesizes import letter
@@ -16,6 +18,43 @@ load_dotenv(find_dotenv())
 
 TOKEN: Final = os.getenv('TELEGRAM_BOT_TOKEN') 
 BOT_USERNAME = '@EnghlishCoachBot'
+APP_VERSION: Final = os.getenv('APP_VERSION', '1.0.0')
+VERSION_SERVER_HOST: Final = os.getenv('VERSION_SERVER_HOST', '0.0.0.0')
+VERSION_SERVER_PORT: Final = int(os.getenv('VERSION_SERVER_PORT', '8000'))
+
+
+def get_version_payload() -> dict[str, str]:
+    return {
+        'name': 'ai-english-tutor',
+        'version': APP_VERSION,
+        'api_version': 'v2',
+        'status': 'ok',
+    }
+
+
+class VersionRequestHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path != '/version/v2':
+            self.send_error(404, 'Not Found')
+            return
+
+        body = json.dumps(get_version_payload()).encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, format, *args):
+        return
+
+
+def start_version_server():
+    server = HTTPServer((VERSION_SERVER_HOST, VERSION_SERVER_PORT), VersionRequestHandler)
+    thread = Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    print(f'Version endpoint listening on http://{VERSION_SERVER_HOST}:{VERSION_SERVER_PORT}/version/v2')
+    return server
 
 
 #Commands
@@ -176,6 +215,7 @@ async def error(update: Update, context: ContextTypes):
 
 def main():
     print('Starting up bot...')
+    start_version_server()
     app = Application.builder().token(TOKEN).build()
 
     # Commands
