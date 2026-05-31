@@ -14,8 +14,10 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 load_dotenv(find_dotenv())
 
-TOKEN: Final = os.getenv('TELEGRAM_BOT_TOKEN') 
+TOKEN: Final = os.getenv('TELEGRAM_BOT_TOKEN')
 BOT_USERNAME = '@EnghlishCoachBot'
+BOT_VERSION = '2.0.0'
+API_VERSION = 'v2'
 
 
 #Commands
@@ -27,6 +29,15 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Hello! Welcome to the English Coach Bot")
+
+async def version_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    version_info = (
+        f"English Coach Bot v{BOT_VERSION}\n"
+        f"API: {API_VERSION}\n"
+        f"Python: 3.x\n"
+        f"Framework: python-telegram-bot"
+    )
+    await update.message.reply_text(version_info)
 
 
 # Responses
@@ -182,6 +193,7 @@ def main():
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('custom', custom_command))
+    app.add_handler(CommandHandler('version', version_command))
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
